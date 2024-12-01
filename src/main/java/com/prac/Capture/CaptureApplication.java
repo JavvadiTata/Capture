@@ -1,5 +1,7 @@
 package com.prac.Capture;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.web.bind.annotation.*;
@@ -17,12 +19,16 @@ public class CaptureApplication {
 @RestController
 class CaptureDataController {
 
-	private static final String ORG_URL = "https://cpdldxutilitydev.carelonrx.com/dxuapi/api/deImplManualOverride/getDashboardDetails/268a"; // Organization endpoint
+	private static final Logger logger = LoggerFactory.getLogger(CaptureDataController.class);
+	private static final String ORG_URL = "https://cpdldxutilitydev.carelonrx.com/dxuapi/api/deImplManualOverride/getDashboardDetails/268"; // Organization endpoint
 
 	// Proxy endpoint to fetch data from the organization's server
 	@GetMapping("/proxy")
 	public String fetchOrgData(@RequestHeader Map<String, String> headers) {
 		try {
+			System.out.println("Inside controller - Proxy endpoint hit");
+			logger.info("Inside controller - Proxy endpoint hit");
+
 			// Use RestTemplate to fetch data from the organization server
 			RestTemplate restTemplate = new RestTemplate();
 
@@ -38,8 +44,13 @@ class CaptureDataController {
 
 			String responseData = response.getBody();
 
-			return "Data fetched successfully!";
+			// Log the response data to the console
+			logger.info("Response from Organization API: {}", responseData);
+			System.out.println("Response from Organization API: " + responseData);
+
+			return "Data fetched and logged successfully!";
 		} catch (Exception e) {
+			logger.error("Failed to fetch or capture data: ", e);
 			return "Failed to fetch or capture data: " + e.getMessage();
 		}
 	}
